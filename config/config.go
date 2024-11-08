@@ -80,8 +80,8 @@ func SetupSysConfig() {
 }
 
 // SetupConfig initialize the configuration instance
-func SetupConfig(ldaDir string, user *user.User) {
-	configPath := filepath.Join(ldaDir, "config.toml")
+func SetupConfig(odaDir string, user *user.User) {
+	configPath := filepath.Join(odaDir, "config.toml")
 
 	if _, err := os.Stat(configPath); errors.Is(err, os.ErrNotExist) {
 		if err := util.WriteFileAndChown(configPath, []byte(configExample), 0644, user); err != nil {

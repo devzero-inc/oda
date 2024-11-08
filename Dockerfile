@@ -28,6 +28,6 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 WORKDIR /app
 
-COPY --from=builder /src/lda ./
+COPY --from=builder /src/oda ./
 
-ENTRYPOINT ["/lda"]
+ENTRYPOINT ["/oda"]

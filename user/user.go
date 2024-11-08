@@ -35,11 +35,11 @@ type Config struct {
 	OsName string `json:"os_name" db:"os_name"`
 	// HomeDir is the user home directory
 	HomeDir string `json:"home_dir" db:"home_dir"`
-	// LdaDir is the home LDA directory where all configurations are stored.
-	LdaDir string `json:"lda_dir" db:"lda_dir"`
+	// LdaDir is the home ODA directory where all configurations are stored.
+	LdaDir string `json:"oda_dir" db:"oda_dir"`
 	// IsRoot is a value to check if the user is root
 	IsRoot bool `json:"is_root" db:"is_root"`
-	// ExePath is the path to the lda binary
+	// ExePath is the path to the oda binary
 	ExePath string `json:"exe_path" db:"exe_path"`
 	// ShellTypeToLocation is a map of shell type to location
 	ShellTypeToLocation map[config.ShellType]string `json:"shell_type_to_location" db:"shell_type_to_location"`
@@ -62,8 +62,8 @@ func GetConfig() (*Config, error) {
 
 // InsertConfig inserts Config used to configure the system
 func InsertConfig(osConfig Config) error {
-	query := `INSERT INTO config (os, os_name, home_dir, lda_dir, is_root, exe_path) 
-			  VALUES (:os, :os_name, :home_dir, :lda_dir, :is_root, :exe_path)`
+	query := `INSERT INTO config (os, os_name, home_dir, oda_dir, is_root, exe_path) 
+			  VALUES (:os, :os_name, :home_dir, :oda_dir, :is_root, :exe_path)`
 
 	_, err := database.DB.NamedExec(query, osConfig)
 	if err != nil {
@@ -102,7 +102,7 @@ func UpdateConfig(osConfig Config) error {
                 os = :os, 
                 os_name = :os_name, 
                 home_dir = :home_dir, 
-                lda_dir = :lda_dir, 
+                oda_dir = :oda_dir, 
                 is_root = :is_root, 
                 exe_path = :exe_path
               WHERE id = :id`
@@ -153,7 +153,7 @@ func ConfigureUserSystemInfo(currentConf *Config) {
 
 			// allow for non-user interrupted flow
 			var result string
-			autoupdate := os.Getenv("LDA_AUTO_UPDATE_CONFIG")
+			autoupdate := os.Getenv("ODA_AUTO_UPDATE_CONFIG")
 			if strings.EqualFold(autoupdate, "true") {
 				result = YesUpdate
 			}
@@ -245,7 +245,7 @@ func CompareConfig(existingConf, currentConf *Config) (bool, []string) {
 		diffs = append(diffs, fmt.Sprintf("Home Directory changed from %s to %s", existingConf.HomeDir, currentConf.HomeDir))
 	}
 	if existingConf.LdaDir != currentConf.LdaDir {
-		diffs = append(diffs, fmt.Sprintf("LDA Directory changed from %s to %s", existingConf.LdaDir, currentConf.LdaDir))
+		diffs = append(diffs, fmt.Sprintf("ODA Directory changed from %s to %s", existingConf.LdaDir, currentConf.LdaDir))
 	}
 	if existingConf.IsRoot != currentConf.IsRoot {
 		diffs = append(diffs, fmt.Sprintf("IsRoot status changed from %t to %t", existingConf.IsRoot, currentConf.IsRoot))

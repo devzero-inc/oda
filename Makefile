@@ -6,8 +6,8 @@ CHANGES := $(shell test -n "$$(git status --porcelain)" && echo '+CHANGES' || tr
 
 PROTO_LOCATION := $(shell find proto -iname "proto" -exec echo "-I="{} \;)
 
-PACKAGE = lda
-TARGET = lda
+PACKAGE = oda
+TARGET = oda
 
 VERSION=$(shell git describe --tags --abbrev=0 || echo "x.x.x")
 COMMIT=$(shell git rev-parse --short HEAD)
@@ -17,7 +17,7 @@ BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 UNAME := $(shell uname | tr A-Z a-z )
 
 # docker registry prefix:
-DOCKER_REGISTRY := registry.gitlab.codilas.com/codilas/devzero/lda
+DOCKER_REGISTRY := registry.gitlab.codilas.com/codilas/devzero/oda
 
 # Setup the -ldflags option for go build here, interpolate the variable values
 LDFLAGS = -s -w -X config.Version=${VERSION} -X config.Commit=${COMMIT}${CHANGES} -X config.Branch=${BRANCH}

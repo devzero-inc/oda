@@ -100,7 +100,7 @@ func GetHomeDir(isRoot bool, user *user.User) (string, error) {
 
 // GetLdaDir returns the directory for the shell configuration
 func GetLdaDir(homeDir string, user *user.User) (string, error) {
-	dir := filepath.Join(homeDir, ".lda")
+	dir := filepath.Join(homeDir, ".oda")
 	if err := util.CreateDirAndChown(dir, os.ModePerm, user); err != nil {
 		return "", err
 	}
@@ -108,7 +108,7 @@ func GetLdaDir(homeDir string, user *user.User) (string, error) {
 	return dir, nil
 }
 
-// GetLdaBinaryPath returns the path to the lda binary
+// GetLdaBinaryPath returns the path to the oda binary
 func GetLdaBinaryPath() (string, error) {
 	exePath, err := os.Executable()
 	if err != nil {

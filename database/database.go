@@ -17,9 +17,9 @@ import (
 var DB *sqlx.DB
 
 // Setup initializes the database connection.
-func Setup(ldaDir string, user *user.User) {
+func Setup(odaDir string, user *user.User) {
 
-	dbPath := filepath.Join(ldaDir, "lda.db")
+	dbPath := filepath.Join(odaDir, "oda.db")
 
 	db, err := sqlx.Connect("sqlite", dbPath)
 	if err != nil {

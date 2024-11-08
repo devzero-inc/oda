@@ -48,7 +48,7 @@ func collect(cmd *cobra.Command, _ []string) error {
 	user.Conf, err = user.GetConfig()
 	if err != nil {
 		logging.Log.Error().Err(err).Msg("Failed to get os config")
-		return errors.Wrap(err, "failed to get os config, please run 'lda install' first")
+		return errors.Wrap(err, "failed to get os config, please run 'oda install' first")
 	}
 
 	var grpcClient *client.Client

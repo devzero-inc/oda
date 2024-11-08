@@ -21,12 +21,12 @@ import (
 const (
 	PlistFilePath               = "Library/LaunchAgents"
 	PlistSudoFilePath           = "/Library/LaunchDaemons"
-	PlistName                   = "lda.plist"
+	PlistName                   = "oda.plist"
 	UserServicedFilePath        = ".config/systemd/user"
 	RootServicedFilePath        = "/etc/systemd/system"
-	ServicedName                = "lda.service"
-	LinuxDaemonTemplateLocation = "services/lda.service"
-	MacOSDaemonTemplateLocation = "services/lda.plist"
+	ServicedName                = "oda.service"
+	LinuxDaemonTemplateLocation = "services/oda.service"
+	MacOSDaemonTemplateLocation = "services/oda.plist"
 	ServicePermission           = 0644
 	DirPermission               = 0755
 	BaseCollectCommand          = "collect"
@@ -101,7 +101,7 @@ func (d *Daemon) InstallDaemonConfiguration() error {
 	collectCmd := []string{}
 
 	// TODO: fix this thing, as it is absolutly not robust, and it might not work in all cases
-	if len(commands) > 0 && commands[0] != "lda" {
+	if len(commands) > 0 && commands[0] != "oda" {
 		// Extract the executable name from ExePath
 		executableName := filepath.Base(d.config.ExePath)
 
@@ -113,7 +113,7 @@ func (d *Daemon) InstallDaemonConfiguration() error {
 		for _, command := range commands {
 			d.logger.Debug().Msgf("Checking command path: %s", command)
 			collectCmd = append(collectCmd, command)
-			if command == "lda" {
+			if command == "oda" {
 				break
 			}
 		}

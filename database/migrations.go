@@ -114,7 +114,7 @@ func createConfigTable() {
 			os TEXT NOT NULL,
 			os_name TEXT NOT NULL,
 			home_dir TEXT NOT NULL,
-			lda_dir TEXT NOT NULL,
+			oda_dir TEXT NOT NULL,
 			is_root BOOLEAN NOT NULL,
 			exe_path TEXT NOT NULL
 		);`

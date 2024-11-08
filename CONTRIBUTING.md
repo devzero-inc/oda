@@ -1,7 +1,7 @@
-Contributing to LDA Project
+Contributing to ODA Project
 ===========================
 
-We welcome contributions and are thrilled you're considering contributing to the LDA project. This document outlines the contribution process and how you can report issues or help improve the code.
+We welcome contributions and are thrilled you're considering contributing to the ODA project. This document outlines the contribution process and how you can report issues or help improve the code.
 
 Issues
 ------
@@ -19,4 +19,4 @@ Pull Requests
 * **Feature Proposals**: For substantial changes or new features, we recommend opening a discussion first, either through an issue, GitHub discussions, or direct communication. This allows for community input and guidance before significant effort is undertaken.
 * **Documentation Updates**: If your changes necessitate updates to the documentation, please include those in your PR.
 
-Thank you for your interest in contributing to the LDA project. Your efforts help make this project better for everyone.
+Thank you for your interest in contributing to the ODA project. Your efforts help make this project better for everyone.

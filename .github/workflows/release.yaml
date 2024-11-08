@@ -25,19 +25,19 @@ jobs:
       - name: Build Binary for Linux
         run: |
           make build GOARCH=amd64
-          tar -czvf "lda-linux-amd64.tar.gz" "lda"
+          tar -czvf "oda-linux-amd64.tar.gz" "oda"
           make build GOARCH=arm64
-          tar -czvf "lda-linux-arm64.tar.gz" "lda"
+          tar -czvf "oda-linux-arm64.tar.gz" "oda"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: lda-linux-amd64.tar.gz
-          path: lda-linux-amd64.tar.gz
+          name: oda-linux-amd64.tar.gz
+          path: oda-linux-amd64.tar.gz
 
       - uses: actions/upload-artifact@v4
         with:
-          name: lda-linux-arm64.tar.gz
-          path: lda-linux-arm64.tar.gz
+          name: oda-linux-arm64.tar.gz
+          path: oda-linux-arm64.tar.gz
 
   build-macos:
     runs-on: macos-latest
@@ -58,19 +58,19 @@ jobs:
       - name: Build Binary for macOS
         run: |
           make build GOARCH=amd64 
-          tar -czvf "lda-darwin-amd64.tar.gz" "lda"
+          tar -czvf "oda-darwin-amd64.tar.gz" "oda"
           make build GOARCH=arm64
-          tar -czvf "lda-darwin-arm64.tar.gz" "lda"
+          tar -czvf "oda-darwin-arm64.tar.gz" "oda"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: lda-darwin-amd64.tar.gz
-          path: lda-darwin-amd64.tar.gz
+          name: oda-darwin-amd64.tar.gz
+          path: oda-darwin-amd64.tar.gz
 
       - uses: actions/upload-artifact@v4
         with:
-          name: lda-darwin-arm64.tar.gz
-          path: lda-darwin-arm64.tar.gz
+          name: oda-darwin-arm64.tar.gz
+          path: oda-darwin-arm64.tar.gz
 
   create-release:
     needs: [build-linux, build-macos]
@@ -87,9 +87,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            artifacts/lda-darwin-arm64.tar.gz/lda-darwin-arm64.tar.gz
-            artifacts/lda-darwin-amd64.tar.gz/lda-darwin-amd64.tar.gz
-            artifacts/lda-linux-amd64.tar.gz/lda-linux-amd64.tar.gz
-            artifacts/lda-linux-arm64.tar.gz/lda-linux-arm64.tar.gz
+            artifacts/oda-darwin-arm64.tar.gz/oda-darwin-arm64.tar.gz
+            artifacts/oda-darwin-amd64.tar.gz/oda-darwin-amd64.tar.gz
+            artifacts/oda-linux-amd64.tar.gz/oda-linux-amd64.tar.gz
+            artifacts/oda-linux-arm64.tar.gz/oda-linux-arm64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,4 @@
-LDA_VERSION=${LDA_VERSION:-v0.0.9}
+ODA_VERSION=${ODA_VERSION:-v0.0.9}
 OS=${OS:-$(uname | tr '[:upper:]' '[:lower:]')}
 ARCH=${ARCH:-$(uname -m)}
 
@@ -11,13 +11,13 @@ fi
 
 # Check if wget is available, otherwise fall back to curl
 if command -v wget &> /dev/null; then
-  downloader="wget -O lda-$OS-$ARCH.tar.gz"
+  downloader="wget -O oda-$OS-$ARCH.tar.gz"
 else
-  downloader="curl -L -o lda-$OS-$ARCH.tar.gz"
+  downloader="curl -L -o oda-$OS-$ARCH.tar.gz"
 fi
 
 # Download, unzip, and move binary in one go
-$downloader https://github.com/devzero-inc/local-developer-analytics/releases/download/$LDA_VERSION/lda-$OS-$ARCH.tar.gz && \
-tar -xvf lda-$OS-$ARCH.tar.gz && \
-sudo mv lda /usr/local/bin/lda && \
-rm lda-$OS-$ARCH.tar.gz
+$downloader https://github.com/devzero-inc/local-developer-analytics/releases/download/$ODA_VERSION/oda-$OS-$ARCH.tar.gz && \
+tar -xvf oda-$OS-$ARCH.tar.gz && \
+sudo mv oda /usr/local/bin/oda && \
+rm oda-$OS-$ARCH.tar.gz

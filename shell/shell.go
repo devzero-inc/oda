@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	ldaScript       = "lda.sh"
+	odaScript       = "oda.sh"
 	execPermissions = 0755
 	CollectorName   = "collector.sh"
 	CollectorScript = "scripts/collector.sh"
@@ -42,19 +42,19 @@ var (
 
 	sourceScripts = map[config.ShellType]string{
 		config.Zsh: `
-# LDA shell source
-if [ -f "$HOME/.lda/zsh.sh" ]; then
-    source "$HOME/.lda/zsh.sh"
+# ODA shell source
+if [ -f "$HOME/.oda/zsh.sh" ]; then
+    source "$HOME/.oda/zsh.sh"
 fi`,
 		config.Bash: `
-# LDA shell source
-if [ -f "$HOME/.lda/bash.sh" ]; then
-    source "$HOME/.lda/bash.sh"
+# ODA shell source
+if [ -f "$HOME/.oda/bash.sh" ]; then
+    source "$HOME/.oda/bash.sh"
 fi`,
 		config.Fish: `
-# LDA shell source
-if test -f "$HOME/.lda/fish.sh"
-    source "$HOME/.lda/fish.sh"
+# ODA shell source
+if test -f "$HOME/.oda/fish.sh"
+    source "$HOME/.oda/fish.sh"
 end`,
 	}
 
@@ -148,7 +148,7 @@ func (s *Shell) InstallShellConfiguration() error {
 // DeleteShellConfiguration removes the shell configuration
 func (s *Shell) DeleteShellConfiguration() error {
 
-	filePath := filepath.Join(s.Config.LdaDir, "lda.sh")
+	filePath := filepath.Join(s.Config.LdaDir, "oda.sh")
 
 	if err := os.Remove(filePath); err != nil {
 		s.logger.Err(err).Msg("Failed to remove shell configuration")
@@ -201,7 +201,7 @@ func (s *Shell) InjectShellSource(nonInteractive bool) error {
 
 	s.logger.Debug().Msgf("Shell config file: %s", shellConfigFile)
 	// Check if the script is already present to avoid duplicates
-	if !util.IsScriptPresent(shellConfigFile, "LDA shell source") {
+	if !util.IsScriptPresent(shellConfigFile, "ODA shell source") {
 		if err := util.AppendToFile(shellConfigFile, source); err != nil {
 			s.logger.Error().Msg("Failed to append to the file")
 			return err

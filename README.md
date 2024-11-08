@@ -4,9 +4,9 @@
 ![License](https://img.shields.io/github/license/devzero-inc/local-developer-analytics)
 ![Version](https://img.shields.io/github/v/tag/devzero-inc/local-developer-analytics)
 
-# LDA
+# ODA
 
-The **LDA** CLI is local developer analytics tool. It provides:
+The **ODA** CLI is local developer analytics tool. It provides:
 
 - Tracking commands executed in user shell
 - Tracking processes running on users computer
@@ -17,7 +17,7 @@ The **LDA** CLI is local developer analytics tool. It provides:
 
 ### Homebrew
 
-You can install `lda` using [Homebrew][brew] (macOS or Linux):
+You can install `oda` using [Homebrew][brew] (macOS or Linux):
 
 ```sh
 brew install <>
@@ -25,12 +25,12 @@ brew install <>
 
 ### wget
 
-You can install `lda` using `wget`:
+You can install `oda` using `wget`:
 
 ```sh
-wget https://github.com/devzero-inc/local-developer-analytics/releases/download/<version>/lda-<os>-<arch>.zip
-unzip lda-<os>-<arch>.zip
-mv lda /usr/local/bin
+wget https://github.com/devzero-inc/local-developer-analytics/releases/download/<version>/oda-<os>-<arch>.zip
+unzip oda-<os>-<arch>.zip
+mv oda /usr/local/bin
 ```
 
 ### Other methods
@@ -47,23 +47,23 @@ Install from source:
 
 ## Install & Usage
 
-LDA help interface provides summaries for commands and flags:
+ODA help interface provides summaries for commands and flags:
 
 ```sh
-lda --help
+oda --help
 ```
 
 After binary has been compiled we can install the service with the following commands:
 
-* `lda install` => This will install the daemon, configure base directory, and inject configuration into the shell
-* `lda start` => This will start the daemon
-* `lda stop` => This will stop the daemon
-* `lda uninstall` => This will uninstall the LDA and remove all configuration
-* `lda serve` => This will serve the local dashbaord with data overview
+* `oda install` => This will install the daemon, configure base directory, and inject configuration into the shell
+* `oda start` => This will start the daemon
+* `oda stop` => This will stop the daemon
+* `oda uninstall` => This will uninstall the ODA and remove all configuration
+* `oda serve` => This will serve the local dashbaord with data overview
 
 ## Community
 
-For updates on the LDA CLI, [follow this repo on GitHub][repo].
+For updates on the ODA CLI, [follow this repo on GitHub][repo].
 
 For information on contributing to this project, please see the [contributing guidelines](CONTRIBUTING.md).
 

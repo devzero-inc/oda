@@ -19,7 +19,7 @@ import (
 
 // TODO move this to /var/run or other appropriate location based on OS,
 // TODO /var/run has issues with permisisons os have to explore a bit more.
-const SocketPath = "/tmp/lda.socket"
+const SocketPath = "/tmp/oda.socket"
 
 // Collector collects command and system information
 type Collector struct {
