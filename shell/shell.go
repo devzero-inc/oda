@@ -70,7 +70,7 @@ type Config struct {
 	ShellLocation string
 	IsRoot        bool
 	SudoExecUser  *user.User
-	LdaDir        string
+	OdaDir        string
 	HomeDir       string
 }
 
@@ -92,9 +92,9 @@ func NewShell(config *Config, logger zerolog.Logger) (*Shell, error) {
 // InstallShellConfiguration installs the shell configuration
 func (s *Shell) InstallShellConfiguration() error {
 
-	filePath := filepath.Join(s.Config.LdaDir, shellScriptName[s.Config.ShellType])
+	filePath := filepath.Join(s.Config.OdaDir, shellScriptName[s.Config.ShellType])
 
-	collectorFilePath := filepath.Join(s.Config.LdaDir, CollectorName)
+	collectorFilePath := filepath.Join(s.Config.OdaDir, CollectorName)
 
 	cmdTmpl, err := template.ParseFS(templateFS, CollectorScript)
 	if err != nil {
@@ -148,14 +148,14 @@ func (s *Shell) InstallShellConfiguration() error {
 // DeleteShellConfiguration removes the shell configuration
 func (s *Shell) DeleteShellConfiguration() error {
 
-	filePath := filepath.Join(s.Config.LdaDir, "oda.sh")
+	filePath := filepath.Join(s.Config.OdaDir, "oda.sh")
 
 	if err := os.Remove(filePath); err != nil {
 		s.logger.Err(err).Msg("Failed to remove shell configuration")
 		return err
 	}
 
-	filePath = filepath.Join(s.Config.LdaDir, "collector.sh")
+	filePath = filepath.Join(s.Config.OdaDir, "collector.sh")
 	if err := os.Remove(filePath); err != nil {
 		s.logger.Err(err).Msg("Failed to remove shell configuration")
 		return err

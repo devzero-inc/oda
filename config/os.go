@@ -98,8 +98,8 @@ func GetHomeDir(isRoot bool, user *user.User) (string, error) {
 	return home, nil
 }
 
-// GetLdaDir returns the directory for the shell configuration
-func GetLdaDir(homeDir string, user *user.User) (string, error) {
+// GetOdaDir returns the directory for the shell configuration
+func GetOdaDir(homeDir string, user *user.User) (string, error) {
 	dir := filepath.Join(homeDir, ".oda")
 	if err := util.CreateDirAndChown(dir, os.ModePerm, user); err != nil {
 		return "", err
@@ -108,8 +108,8 @@ func GetLdaDir(homeDir string, user *user.User) (string, error) {
 	return dir, nil
 }
 
-// GetLdaBinaryPath returns the path to the oda binary
-func GetLdaBinaryPath() (string, error) {
+// GetOdaBinaryPath returns the path to the oda binary
+func GetOdaBinaryPath() (string, error) {
 	exePath, err := os.Executable()
 	if err != nil {
 		return "", err

@@ -47,8 +47,8 @@ type Config struct {
 	OsName string `json:"os_name" db:"os_name"`
 	// HomeDir is the user home directory
 	HomeDir string `json:"home_dir" db:"home_dir"`
-	// LdaDir is the home ODA directory where all configurations are stored.
-	LdaDir string `json:"oda_dir" db:"oda_dir"`
+	// OdaDir is the home ODA directory where all configurations are stored.
+	OdaDir string `json:"oda_dir" db:"oda_dir"`
 	// IsRoot is a value to check if the user is root
 	IsRoot bool `json:"is_root" db:"is_root"`
 	// ExePath is the path to the oda binary
@@ -256,8 +256,8 @@ func CompareConfig(existingConf, currentConf *Config) (bool, []string) {
 	if existingConf.HomeDir != currentConf.HomeDir {
 		diffs = append(diffs, fmt.Sprintf("Home Directory changed from %s to %s", existingConf.HomeDir, currentConf.HomeDir))
 	}
-	if existingConf.LdaDir != currentConf.LdaDir {
-		diffs = append(diffs, fmt.Sprintf("ODA Directory changed from %s to %s", existingConf.LdaDir, currentConf.LdaDir))
+	if existingConf.OdaDir != currentConf.OdaDir {
+		diffs = append(diffs, fmt.Sprintf("ODA Directory changed from %s to %s", existingConf.OdaDir, currentConf.OdaDir))
 	}
 	if existingConf.IsRoot != currentConf.IsRoot {
 		diffs = append(diffs, fmt.Sprintf("IsRoot status changed from %t to %t", existingConf.IsRoot, currentConf.IsRoot))

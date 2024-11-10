@@ -46,7 +46,7 @@ func newInstallCmd() *cobra.Command {
 	return installCmd
 }
 
-func NewLdaCmd() *cobra.Command {
+func NewOdaCmd() *cobra.Command {
 	odaCmd := &cobra.Command{
 		Use:   "oda",
 		Short: "Command line manager for ODA project.",
@@ -175,12 +175,12 @@ func setupConfig() {
 		fmt.Fprintf(config.SysConfig.ErrOut, "Failed to get home directory: %s\n", err)
 		os.Exit(1)
 	}
-	odaDir, err := config.GetLdaDir(homeDir, sudoExecUser)
+	odaDir, err := config.GetOdaDir(homeDir, sudoExecUser)
 	if err != nil {
 		fmt.Fprintf(config.SysConfig.ErrOut, "Failed to get ODA directory: %s\n", err)
 		os.Exit(1)
 	}
-	exePath, err := config.GetLdaBinaryPath()
+	exePath, err := config.GetOdaBinaryPath()
 	if err != nil {
 		fmt.Fprintf(config.SysConfig.ErrOut, "Failed to get executable path: %s\n", err)
 		os.Exit(1)
@@ -206,7 +206,7 @@ func setupConfig() {
 		Os:      int64(osConf),
 		OsName:  osName,
 		HomeDir: homeDir,
-		LdaDir:  odaDir,
+		OdaDir:  odaDir,
 		IsRoot:  isRoot,
 		ExePath: exePath,
 		User:    sudoExecUser,
@@ -218,7 +218,7 @@ func setupConfig() {
 
 // Execute is the entry point for the command line
 func Execute() {
-	odaCmd := NewLdaCmd()
+	odaCmd := NewOdaCmd()
 	if err := odaCmd.Execute(); err != nil {
 		logging.Log.Err(err).Msg("Failed to execute main oda command")
 		os.Exit(1)
@@ -368,7 +368,7 @@ func install(cmd *cobra.Command, _ []string) error {
 			ShellLocation: shellLocation,
 			IsRoot:        user.Conf.IsRoot,
 			SudoExecUser:  user.Conf.User,
-			LdaDir:        user.Conf.LdaDir,
+			OdaDir:        user.Conf.OdaDir,
 			HomeDir:       user.Conf.HomeDir,
 		}
 
@@ -415,7 +415,7 @@ func uninstall(_ *cobra.Command, _ []string) error {
 			ShellLocation: shellLocation,
 			IsRoot:        user.Conf.IsRoot,
 			SudoExecUser:  user.Conf.User,
-			LdaDir:        user.Conf.LdaDir,
+			OdaDir:        user.Conf.OdaDir,
 			HomeDir:       user.Conf.HomeDir,
 		}
 		shl, err := shell.NewShell(shellConfig, logging.Log)
