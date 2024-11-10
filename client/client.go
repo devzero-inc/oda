@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	gen "github.com/devzero-inc/local-developer-analytics/gen/api/v1"
-	"github.com/devzero-inc/local-developer-analytics/logging"
+	gen "github.com/devzero-inc/oda/gen/api/v1"
+	"github.com/devzero-inc/oda/logging"
 
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"

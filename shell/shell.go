@@ -10,9 +10,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/devzero-inc/local-developer-analytics/collector"
-	"github.com/devzero-inc/local-developer-analytics/config"
-	"github.com/devzero-inc/local-developer-analytics/util"
+	"github.com/devzero-inc/oda/collector"
+	"github.com/devzero-inc/oda/config"
+	"github.com/devzero-inc/oda/util"
 
 	"github.com/manifoldco/promptui"
 	"github.com/rs/zerolog"

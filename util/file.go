@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/devzero-inc/local-developer-analytics/logging"
+	"github.com/devzero-inc/oda/logging"
 )
 
 // FileExists checks if a file exists or not

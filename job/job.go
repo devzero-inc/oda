@@ -3,8 +3,8 @@ package job
 import (
 	"time"
 
-	"github.com/devzero-inc/local-developer-analytics/collector"
-	"github.com/devzero-inc/local-developer-analytics/process"
+	"github.com/devzero-inc/oda/collector"
+	"github.com/devzero-inc/oda/process"
 )
 
 // Cleanup job that will run in background and every 'hours' try to run the ticker

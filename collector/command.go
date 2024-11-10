@@ -4,10 +4,10 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/devzero-inc/local-developer-analytics/config"
-	"github.com/devzero-inc/local-developer-analytics/database"
-	gen "github.com/devzero-inc/local-developer-analytics/gen/api/v1"
-	"github.com/devzero-inc/local-developer-analytics/logging"
+	"github.com/devzero-inc/oda/config"
+	"github.com/devzero-inc/oda/database"
+	gen "github.com/devzero-inc/oda/gen/api/v1"
+	"github.com/devzero-inc/oda/logging"
 )
 
 // Command is the model for command

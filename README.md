@@ -1,8 +1,8 @@
 ![The devzero logo](https://console.devzero.io/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Ffull_logo.379052d8.png&w=1080&q=75)
 
-![Workflow Status](https://img.shields.io/github/actions/workflow/status/devzero-inc/local-developer-analytics/go.yaml)
-![License](https://img.shields.io/github/license/devzero-inc/local-developer-analytics)
-![Version](https://img.shields.io/github/v/tag/devzero-inc/local-developer-analytics)
+![Workflow Status](https://img.shields.io/github/actions/workflow/status/devzero-inc/oda/go.yaml)
+![License](https://img.shields.io/github/license/devzero-inc/oda)
+![Version](https://img.shields.io/github/v/tag/devzero-inc/oda)
 
 # ODA
 
@@ -28,7 +28,7 @@ brew install <>
 You can install `oda` using `wget`:
 
 ```sh
-wget https://github.com/devzero-inc/local-developer-analytics/releases/download/<version>/oda-<os>-<arch>.zip
+wget https://github.com/devzero-inc/oda/releases/download/<version>/oda-<os>-<arch>.zip
 unzip oda-<os>-<arch>.zip
 mv oda /usr/local/bin
 ```
@@ -67,4 +67,4 @@ For updates on the ODA CLI, [follow this repo on GitHub][repo].
 
 For information on contributing to this project, please see the [contributing guidelines](CONTRIBUTING.md).
 
-[repo]: https://github.com/devzero-inc/local-developer-analytics
+[repo]: https://github.com/devzero-inc/oda

@@ -11,7 +11,7 @@ import (
 	strings "strings"
 
 	connect "connectrpc.com/connect"
-	v1 "github.com/devzero-inc/local-developer-analytics/gen/api/v1"
+	v1 "github.com/devzero-inc/oda/gen/api/v1"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 

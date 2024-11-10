@@ -8,10 +8,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/devzero-inc/local-developer-analytics/client"
-	gen "github.com/devzero-inc/local-developer-analytics/gen/api/v1"
-	"github.com/devzero-inc/local-developer-analytics/process"
-	"github.com/devzero-inc/local-developer-analytics/util"
+	"github.com/devzero-inc/oda/client"
+	gen "github.com/devzero-inc/oda/gen/api/v1"
+	"github.com/devzero-inc/oda/process"
+	"github.com/devzero-inc/oda/util"
 
 	"github.com/rs/zerolog"
 

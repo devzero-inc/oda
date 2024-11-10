@@ -1,4 +1,4 @@
-module github.com/devzero-inc/local-developer-analytics
+module github.com/devzero-inc/oda
 
 go 1.21.4
 

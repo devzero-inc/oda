@@ -17,7 +17,7 @@ else
 fi
 
 # Download, unzip, and move binary in one go
-$downloader https://github.com/devzero-inc/local-developer-analytics/releases/download/$ODA_VERSION/oda-$OS-$ARCH.tar.gz && \
+$downloader https://github.com/devzero-inc/oda/releases/download/$ODA_VERSION/oda-$OS-$ARCH.tar.gz && \
 tar -xvf oda-$OS-$ARCH.tar.gz && \
 sudo mv oda /usr/local/bin/oda && \
 rm oda-$OS-$ARCH.tar.gz
