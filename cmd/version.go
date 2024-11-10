@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/devzero-inc/local-developer-analytics/config"
+	"github.com/devzero-inc/oda/config"
 
 	"github.com/spf13/cobra"
 )

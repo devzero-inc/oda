@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/devzero-inc/local-developer-analytics/config"
+	"github.com/devzero-inc/oda/config"
 )
 
 // RunMigrations all additional migrations should be registered here

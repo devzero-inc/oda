@@ -3,12 +3,12 @@ package cmd
 import (
 	"time"
 
-	"github.com/devzero-inc/local-developer-analytics/client"
-	"github.com/devzero-inc/local-developer-analytics/collector"
-	"github.com/devzero-inc/local-developer-analytics/config"
-	"github.com/devzero-inc/local-developer-analytics/logging"
-	"github.com/devzero-inc/local-developer-analytics/process"
-	"github.com/devzero-inc/local-developer-analytics/user"
+	"github.com/devzero-inc/oda/client"
+	"github.com/devzero-inc/oda/collector"
+	"github.com/devzero-inc/oda/config"
+	"github.com/devzero-inc/oda/logging"
+	"github.com/devzero-inc/oda/process"
+	"github.com/devzero-inc/oda/user"
 
 	"github.com/pkg/errors"
 

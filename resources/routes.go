@@ -9,9 +9,9 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/devzero-inc/local-developer-analytics/collector"
-	"github.com/devzero-inc/local-developer-analytics/logging"
-	"github.com/devzero-inc/local-developer-analytics/process"
+	"github.com/devzero-inc/oda/collector"
+	"github.com/devzero-inc/oda/logging"
+	"github.com/devzero-inc/oda/process"
 )
 
 // Embedding directory

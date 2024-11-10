@@ -10,11 +10,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/devzero-inc/local-developer-analytics/collector"
-	"github.com/devzero-inc/local-developer-analytics/config"
-	"github.com/devzero-inc/local-developer-analytics/database"
-	"github.com/devzero-inc/local-developer-analytics/logging"
-	"github.com/devzero-inc/local-developer-analytics/util"
+	"github.com/devzero-inc/oda/collector"
+	"github.com/devzero-inc/oda/config"
+	"github.com/devzero-inc/oda/database"
+	"github.com/devzero-inc/oda/logging"
+	"github.com/devzero-inc/oda/util"
 	jwtlib "github.com/golang-jwt/jwt/v4"
 
 	"github.com/golang-jwt/jwt/v4"

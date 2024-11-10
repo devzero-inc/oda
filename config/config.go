@@ -8,7 +8,7 @@ import (
 	"os/user"
 	"path/filepath"
 
-	"github.com/devzero-inc/local-developer-analytics/util"
+	"github.com/devzero-inc/oda/util"
 
 	"github.com/pkg/errors"
 

@@ -6,8 +6,8 @@ import (
 	"os/user"
 	"path/filepath"
 
-	"github.com/devzero-inc/local-developer-analytics/config"
-	"github.com/devzero-inc/local-developer-analytics/util"
+	"github.com/devzero-inc/oda/config"
+	"github.com/devzero-inc/oda/util"
 
 	"github.com/jmoiron/sqlx"
 	_ "modernc.org/sqlite"

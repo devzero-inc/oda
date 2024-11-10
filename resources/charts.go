@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/devzero-inc/local-developer-analytics/collector"
-	"github.com/devzero-inc/local-developer-analytics/process"
+	"github.com/devzero-inc/oda/collector"
+	"github.com/devzero-inc/oda/process"
 )
 
 // ChartData represents the overall structure for a Chart.js chart configuration.
