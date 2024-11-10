@@ -1,0 +1,16 @@
+[Unit]
+Description=Devzero.io ODA Service
+After=network.target
+
+[Service]
+Environment="HOME={{.Home}}"
+User={{.Username}}
+Group={{.Group}}
+Type=simple
+ExecStart={{.BinaryPath}} {{.CollectCommand}}
+Restart=always
+StandardOutput=file:/tmp/devzero.io.oda.out.log
+StandardError=file:/tmp/devzero.io.oda.err.log
+
+[Install]
+WantedBy=default.target
