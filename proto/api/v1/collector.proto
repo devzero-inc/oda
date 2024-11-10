@@ -29,6 +29,7 @@ message Command {
   string result = 9; // Result of executed command => success/failure
   string status = 10; // Status of executed command 
   string repository = 11; // Repository is repository where commands are executed
+  int64 pid = 12; // PID of the command
 }
 
 // Define a message representing a process, including its metadata and resource usage.

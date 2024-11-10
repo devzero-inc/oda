@@ -2,11 +2,16 @@ generate_uuid() {
   echo "$(date +%s)-$$-$RANDOM"
 }
 
+generate_ppid() {
+  echo "$$"
+}
+
 preexec() {
   export LAST_COMMAND=$1
   UUID=$(generate_uuid)
+  PID=$(generate_ppid)
   # Send a start execution message
-  {{.CommandScriptPath}} "start" "$LAST_COMMAND" "$PWD" "$USER" "$UUID"
+  {{.CommandScriptPath}} "start" "$LAST_COMMAND" "$PWD" "$USER" "$UUID" "$PID"
 }
 
 precmd() {
@@ -18,5 +23,5 @@ precmd() {
   fi
   
   # Send an end execution message with result and exit status
-  {{.CommandScriptPath}} "end" "$LAST_COMMAND" "$PWD" "$USER" "$UUID" "$result" "$exit_status"
+  {{.CommandScriptPath}} "end" "$LAST_COMMAND" "$PWD" "$USER" "$UUID" "$PID" "$result" "$exit_status"
 }

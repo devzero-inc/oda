@@ -74,7 +74,8 @@ func createCommandsTable() {
 			end_time INTEGER,
 			status TEXT,
 			result TEXT,
-			repository TEXT
+			repository TEXT,
+			pid INTEGER
 		);`
 
 		_, err := DB.Exec(createCommandsTableSQL)

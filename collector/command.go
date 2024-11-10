@@ -23,6 +23,7 @@ type Command struct {
 	Status        string `json:"status" db:"status"`
 	Result        string `json:"result" db:"result"`
 	Repository    string `json:"repository" db:"repository"`
+	PID           int64  `json:"pid" db:"pid"`
 }
 
 // GetCommandById fetches a command by its ID
@@ -91,8 +92,8 @@ func DeleteCommandsByDays(days int) error {
 
 // InsertCommand inserts a command into the database
 func InsertCommand(command Command) error {
-	query := `INSERT INTO commands (category, command, user, directory, execution_time, start_time, end_time, status, result, repository)
-	VALUES (:category, :command, :user, :directory, :execution_time, :start_time, :end_time, :status, :result, :repository)`
+	query := `INSERT INTO commands (category, command, user, directory, execution_time, start_time, end_time, status, result, repository, pid)
+	VALUES (:category, :command, :user, :directory, :execution_time, :start_time, :end_time, :status, :result, :repository, :pid)`
 
 	_, err := database.DB.NamedExec(query, command)
 
@@ -139,5 +140,6 @@ func MapCommandToProto(command Command) *gen.Command {
 		Status:        command.Status,
 		Result:        command.Result,
 		Repository:    command.Repository,
+		Pid:           command.PID,
 	}
 }
