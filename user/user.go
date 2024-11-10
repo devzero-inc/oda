@@ -2,6 +2,7 @@ package user
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -14,8 +15,11 @@ import (
 	"github.com/devzero-inc/local-developer-analytics/database"
 	"github.com/devzero-inc/local-developer-analytics/logging"
 	"github.com/devzero-inc/local-developer-analytics/util"
+	jwtlib "github.com/golang-jwt/jwt/v4"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/manifoldco/promptui"
+	"golang.org/x/oauth2"
 )
 
 // TODO: set up localization engine for these strings.
@@ -24,6 +28,14 @@ const (
 	NoKeep    string = "No, keep the existing configuration"
 )
 
+// CustomClaims are the custom claims supported by JWTs the backend mints
+type CustomClaims struct {
+	Email  string `json:"email"`
+	TeamID string `json:"team_id"`
+	jwtlib.RegisteredClaims
+}
+
+// Conf is the global configuration for the system
 var Conf *Config
 
 // Config is the basic configuration for the system
@@ -330,6 +342,7 @@ func ReadDZCliConfig(path string) (collector.AuthConfig, error) {
 		localUserFile  = "user_id.txt"
 		localTeamFile  = "team_id.txt"
 		localEmailFile = "user_email.txt"
+		localOauthFile = "oauth_token.json"
 	)
 
 	userId := ""
@@ -357,6 +370,32 @@ func ReadDZCliConfig(path string) (collector.AuthConfig, error) {
 		data, err := os.ReadFile(localEmailPath)
 		if err == nil && len(data) > 0 {
 			userEmail = string(data)
+		}
+	}
+
+	localOauthPath := filepath.Join(path, localOauthFile)
+	if util.FileExists(localOauthPath) {
+		data, err := os.ReadFile(localOauthPath)
+		if err == nil && len(data) > 0 {
+			token := &oauth2.Token{}
+			if err := json.Unmarshal(data, token); err != nil {
+				return collector.AuthConfig{}, err
+			}
+
+			var claims CustomClaims
+			// Parse and verify the token
+			_, _, err := new(jwt.Parser).ParseUnverified(token.AccessToken, &claims)
+			if err != nil {
+			}
+			if err != nil {
+				return collector.AuthConfig{}, err
+			}
+
+			if claims.Email != "" || claims.TeamID != "" {
+				userEmail = claims.Email
+				teamId = claims.TeamID
+			}
+
 		}
 	}
 
