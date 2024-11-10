@@ -2,10 +2,11 @@ package util
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"os"
+	"os/exec"
 	"os/user"
-	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -126,45 +127,36 @@ func AppendToFile(filePath, content string) error {
 	return nil
 }
 
-// GetRepoNameFromConfig reads the .git/config file and extracts the repository name
+// GetRepoNameFromConfig checks if the current directory (or any of its parent directories) is inside a Git repository.
+// If inside a Git repo, it retrieves and returns the repository name.
 func GetRepoNameFromConfig(path string) (string, error) {
-
-	gitPath := filepath.Join(path, ".git")
-	info, err := os.Stat(gitPath)
-	if err != nil && info != nil && !info.IsDir() {
-		return "", fmt.Errorf("could not find .git directory: %w", err)
+	// Check if we're inside a Git worktree
+	cmd := exec.Command("git", "-C", path, "rev-parse", "--is-inside-work-tree")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil || strings.TrimSpace(out.String()) != "true" {
+		return "", fmt.Errorf("not inside a Git repository: %w", err)
 	}
 
-	configPath := filepath.Join(gitPath, "config")
-	file, err := Fs.Open(configPath)
+	// Retrieve the remote origin URL
+	cmd = exec.Command("git", "-C", path, "config", "--get", "remote.origin.url")
+	out.Reset()
+	cmd.Stdout = &out
+	err = cmd.Run()
 	if err != nil {
-		return "", fmt.Errorf("could not open .git/config: %w", err)
-	}
-	defer file.Close()
-
-	var url string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-
-		// Look for the URL in the origin section
-		if strings.HasPrefix(line, "url =") {
-			url = strings.TrimSpace(strings.TrimPrefix(line, "url ="))
-			break
-		}
+		return "", fmt.Errorf("could not get remote origin URL: %w", err)
 	}
 
-	if err := scanner.Err(); err != nil {
-		return "", fmt.Errorf("error reading .git/config: %w", err)
-	}
-
+	url := strings.TrimSpace(out.String())
 	if url == "" {
-		return "", fmt.Errorf("no origin URL found in .git/config")
+		return "", fmt.Errorf("no origin URL found in Git configuration")
 	}
 
-	url = strings.TrimSuffix(url, ".git") // Remove .git suffix if present
+	// Remove .git suffix if present and extract repo name from the URL
+	url = strings.TrimSuffix(url, ".git")
 	parts := strings.Split(url, "/")
+	repoName := parts[len(parts)-1]
 
-	// Extract repo name from URL
-	return parts[len(parts)-1], nil
+	return repoName, nil
 }
