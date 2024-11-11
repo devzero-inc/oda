@@ -119,6 +119,7 @@ func collect(cmd *cobra.Command, _ []string) error {
 		intervalConfig,
 		auth,
 		config.AppConfig.ExcludeRegex,
+		config.AppConfig.ExcludeCommands,
 		procCol,
 	)
 

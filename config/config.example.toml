@@ -57,6 +57,10 @@ server_host = "pulse.devzero.dev:443"
 # Default: (empty, meaning no processes are excluded)
 # exclude_regex = ""
 
+# Regular expression pattern to exclude certain commands from being collected.
+# This can be used to omit sensitive or irrelevant processes from the data collection.
+exclude_commands = ["^vim", "^nano", "^less", "^top", "^htop", "^ssh", "^scp", "^rsync", "^screen", "^tmux", "^dz", "^oda"]
+
 # Whether to establish a secure connection for remote data collection.
 # When enabled, data transmitted to and from the remote server will be encrypted.
 # Requires 'cert_file' to be specified if true.

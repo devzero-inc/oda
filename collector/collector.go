@@ -28,6 +28,7 @@ type Collector struct {
 	client           *client.Client
 	logger           zerolog.Logger
 	excludeRegex     string
+	excludeCommands  []string
 	collectionConfig collectionConfig
 	authConfig       AuthConfig
 	protoAuthConfig  *gen.Auth
@@ -70,7 +71,7 @@ type collectionConfig struct {
 }
 
 // NewCollector creates a new collector instance
-func NewCollector(socketPath string, client *client.Client, logger zerolog.Logger, config IntervalConfig, auth AuthConfig, excludeRegex string, process process.SystemProcess) *Collector {
+func NewCollector(socketPath string, client *client.Client, logger zerolog.Logger, config IntervalConfig, auth AuthConfig, excludeRegex string, excludeCommands []string, process process.SystemProcess) *Collector {
 
 	collector := &Collector{
 		socketPath: socketPath,
@@ -80,9 +81,10 @@ func NewCollector(socketPath string, client *client.Client, logger zerolog.Logge
 			ongoingCommands: make(map[string]Command),
 			process:         process,
 		},
-		intervalConfig: config,
-		authConfig:     auth,
-		excludeRegex:   excludeRegex,
+		intervalConfig:  config,
+		authConfig:      auth,
+		excludeRegex:    excludeRegex,
+		excludeCommands: excludeCommands,
 	}
 
 	if auth.TeamID != "" && auth.UserEmail != "" {
@@ -310,7 +312,7 @@ func (c *Collector) handleSocketCollection(con net.Conn) error {
 }
 
 func (c *Collector) handleStartCommand(parts []string) error {
-	if !IsCommandAcceptable(parts[1], c.excludeRegex) {
+	if !IsCommandAcceptable(parts[1], c.excludeRegex, c.excludeCommands) {
 		c.logger.Debug().Msg("Command is not acceptable")
 		return fmt.Errorf("command is not acceptable")
 	}
@@ -343,7 +345,7 @@ func (c *Collector) handleStartCommand(parts []string) error {
 
 func (c *Collector) handleEndCommand(parts []string) error {
 
-	if !IsCommandAcceptable(parts[1], c.excludeRegex) {
+	if !IsCommandAcceptable(parts[1], c.excludeRegex, c.excludeCommands) {
 		c.logger.Debug().Msg("Command is not acceptable")
 		return fmt.Errorf("command is not acceptable")
 	}

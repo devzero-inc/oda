@@ -39,6 +39,8 @@ type Config struct {
 	CertFile string `mapstructure:"cert_file"`
 	// ExcludeRegex regular expression to exclude processes from collection
 	ExcludeRegex string `mapstructure:"exclude_regex"`
+	// ExcludeCommands regular expression to exclude commands from collection
+	ExcludeCommands []string `mapstructure:"exclude_commands"`
 	// ProcessCollectionType type of process collection to use, ps or psutil
 	ProcessCollectionType string `mapstructure:"process_collection_type"`
 	// TeamID is the team identifier for the workspace
