@@ -85,7 +85,7 @@ func NewCollector(socketPath string, client *client.Client, logger zerolog.Logge
 		excludeRegex:   excludeRegex,
 	}
 
-	if auth.TeamID != "" && auth.UserID != "" {
+	if auth.TeamID != "" && auth.UserEmail != "" {
 		collector.protoAuthConfig = &gen.Auth{
 			UserId:      auth.UserID,
 			TeamId:      auth.TeamID,
