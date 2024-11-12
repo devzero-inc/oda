@@ -50,7 +50,7 @@ remote_collection = true
 # The server host address for remote collection.
 # This is required when 'remote_collection' is enabled and specifies the remote server to connect to.
 # Default: (empty)
-server_host = "pulse.devzero.dev:443"
+server_host = "pulse.devzero.io:443"
 
 # Regular expression pattern to exclude certain processes from being collected.
 # This can be used to omit sensitive or irrelevant processes from the data collection.
