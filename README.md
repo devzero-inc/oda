@@ -1,4 +1,4 @@
-![The devzero logo](https://console.devzero.io/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Ffull_logo.379052d8.png&w=1080&q=75)
+<img src="https://cdn.prod.website-files.com/659f77ad8e06050cc27ed4d3/662945e3d47abbc448cd338e_Full%20logo%20(colored%20on%20dark).svg" alt="The DevZero logo" width="200"/>
 
 ![Workflow Status](https://img.shields.io/github/actions/workflow/status/devzero-inc/oda/go.yaml)
 ![License](https://img.shields.io/github/license/devzero-inc/oda)
@@ -6,7 +6,7 @@
 
 # ODA
 
-The **ODA** CLI is local developer analytics tool. It provides:
+The **ODA** CLI is Open Development Analytics tool. It provides:
 
 - Tracking commands executed in user shell
 - Tracking processes running on users computer
@@ -15,7 +15,7 @@ The **ODA** CLI is local developer analytics tool. It provides:
 
 ## Installation
 
-### Homebrew
+### Homebrew (Coming soon)
 
 You can install `oda` using [Homebrew][brew] (macOS or Linux):
 
