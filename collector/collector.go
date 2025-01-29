@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/devzero-inc/oda/client"
 	gen "github.com/devzero-inc/oda/gen/api/v1"
@@ -14,8 +15,6 @@ import (
 	"github.com/devzero-inc/oda/util"
 
 	"github.com/rs/zerolog"
-
-	"time"
 )
 
 // TODO move this to /var/run or other appropriate location based on OS,
@@ -46,10 +45,12 @@ type IntervalConfig struct {
 
 // AuthConfig contains the configuration for the command processing and authentication
 type AuthConfig struct {
-	TeamID      string
-	UserID      string
-	WorkspaceID string
-	UserEmail   string
+	TeamID         string
+	UserID         string
+	WorkspaceID    string
+	UserEmail      string
+	AuthToken      string
+	WorkspaceToken string
 }
 
 // collectionConfig contains the configuration for the collection process
@@ -72,7 +73,6 @@ type collectionConfig struct {
 
 // NewCollector creates a new collector instance
 func NewCollector(socketPath string, client *client.Client, logger zerolog.Logger, config IntervalConfig, auth AuthConfig, excludeRegex string, excludeCommands []string, process process.SystemProcess) *Collector {
-
 	collector := &Collector{
 		socketPath: socketPath,
 		client:     client,
@@ -93,6 +93,7 @@ func NewCollector(socketPath string, client *client.Client, logger zerolog.Logge
 			TeamId:      auth.TeamID,
 			WorkspaceId: &auth.WorkspaceID,
 			UserEmail:   auth.UserEmail,
+			AuthToken:   &auth.AuthToken,
 		}
 	}
 
@@ -155,7 +156,6 @@ func (c *Collector) collectSystemInformation(ctx context.Context, initialDuratio
 }
 
 func (c *Collector) collectOnce() error {
-
 	c.logger.Debug().Msg("Collecting process")
 
 	processes, err := c.collectionConfig.process.Collect()
@@ -171,7 +171,6 @@ func (c *Collector) collectOnce() error {
 	if c.client != nil {
 		var processMetrics []*gen.Process
 		for _, p := range processes {
-
 			processMetrics = append(
 				processMetrics,
 				process.MapProcessToProto(p),
@@ -201,8 +200,7 @@ func (c *Collector) onStartCommand() {
 	// If the collection is not running, start it with a timeout
 	if !c.collectionConfig.isCollectionRunning {
 		c.logger.Debug().Msg("Starting collection")
-		c.collectionConfig.collectionContext, c.collectionConfig.collectionCancelFunc =
-			context.WithTimeout(context.Background(), c.intervalConfig.MaxDuration)
+		c.collectionConfig.collectionContext, c.collectionConfig.collectionCancelFunc = context.WithTimeout(context.Background(), c.intervalConfig.MaxDuration)
 		go c.collectSystemInformation(
 			c.collectionConfig.collectionContext,
 			c.intervalConfig.CommandInterval,
@@ -344,7 +342,6 @@ func (c *Collector) handleStartCommand(parts []string) error {
 }
 
 func (c *Collector) handleEndCommand(parts []string) error {
-
 	if !IsCommandAcceptable(parts[1], c.excludeRegex, c.excludeCommands) {
 		c.logger.Debug().Msg("Command is not acceptable")
 		return fmt.Errorf("command is not acceptable")

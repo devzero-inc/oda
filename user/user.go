@@ -284,17 +284,19 @@ func GetStoragePath(os config.OSType, home string) (string, error) {
 // ReadDZWorkspaceConfig reads the DevZero workspace configuration
 func ReadDZWorkspaceConfig() (collector.AuthConfig, error) {
 	const (
-		devzeroConfigPath    = "/etc/devzero/configs"
-		devzeroTeamFile      = "DEVZERO_TEAM_ID"
-		devzeroUserFile      = "DEVZERO_USER_ID"
-		devzeroWorkspaceFile = "DEVZERO_WORKSPACE_ID"
-		devzeroEmailFile     = "DEVZERO_WORKSPACE_OWNER_EMAIL"
+		devzeroConfigPath         = "/etc/devzero/configs"
+		devzeroTeamFile           = "DEVZERO_TEAM_ID"
+		devzeroUserFile           = "DEVZERO_USER_ID"
+		devzeroWorkspaceFile      = "DEVZERO_WORKSPACE_ID"
+		devzeroEmailFile          = "DEVZERO_WORKSPACE_OWNER_EMAIL"
+		devzeroWorkspaceTokenFile = "WORKSPACE_TOKEN"
 	)
 
 	userId := ""
 	userEmail := ""
 	teamId := ""
 	workspaceId := ""
+	workspaceToken := ""
 
 	teamPath := filepath.Join(devzeroConfigPath, devzeroTeamFile)
 	if util.FileExists(teamPath) {
@@ -328,11 +330,20 @@ func ReadDZWorkspaceConfig() (collector.AuthConfig, error) {
 		}
 	}
 
+	workspaceTokenPath := filepath.Join(devzeroConfigPath, devzeroWorkspaceTokenFile)
+	if util.FileExists(workspaceTokenPath) {
+		data, err := os.ReadFile(workspaceTokenPath)
+		if err == nil && len(data) > 0 {
+			workspaceToken = string(data)
+		}
+	}
+
 	return collector.AuthConfig{
-		UserID:      userId,
-		TeamID:      teamId,
-		WorkspaceID: workspaceId,
-		UserEmail:   userEmail,
+		UserID:         userId,
+		TeamID:         teamId,
+		WorkspaceID:    workspaceId,
+		UserEmail:      userEmail,
+		WorkspaceToken: workspaceToken,
 	}, nil
 }
 
@@ -348,6 +359,7 @@ func ReadDZCliConfig(path string) (collector.AuthConfig, error) {
 	userId := ""
 	teamId := ""
 	userEmail := ""
+	authToken := ""
 
 	localUserPath := filepath.Join(path, localUserFile)
 	if util.FileExists(localUserPath) {
@@ -382,11 +394,11 @@ func ReadDZCliConfig(path string) (collector.AuthConfig, error) {
 				return collector.AuthConfig{}, err
 			}
 
+			authToken = token.AccessToken
+
 			var claims CustomClaims
 			// Parse and verify the token
 			_, _, err := new(jwt.Parser).ParseUnverified(token.AccessToken, &claims)
-			if err != nil {
-			}
 			if err != nil {
 				return collector.AuthConfig{}, err
 			}
@@ -395,7 +407,6 @@ func ReadDZCliConfig(path string) (collector.AuthConfig, error) {
 				userEmail = claims.Email
 				teamId = claims.TeamID
 			}
-
 		}
 	}
 
@@ -403,5 +414,6 @@ func ReadDZCliConfig(path string) (collector.AuthConfig, error) {
 		UserID:    userId,
 		TeamID:    teamId,
 		UserEmail: userEmail,
+		AuthToken: authToken,
 	}, nil
 }
