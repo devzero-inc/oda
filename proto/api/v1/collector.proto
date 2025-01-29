@@ -10,59 +10,70 @@ option java_package = "gen.api.v1";
 
 // Define a message representing an auth information about user and team.
 message Auth {
-  string user_id = 1; // Unique identifer for user that is processing the data
-  string team_id = 2; // Unique identifier for users team
-  optional string workspace_id = 3; // Unique identifier of the Workspace that is running the request
-  string user_email = 4; // Unique identifier of user that is processing the data
+  string user_id = 1;  // Unique identifer for user that is processing the data
+  string team_id = 2;  // Unique identifier for users team
+  optional string workspace_id =
+      3;  // Unique identifier of the Workspace that is running the request
+  string user_email =
+      4;  // Unique identifier of user that is processing the data
+  optional string auth_token = 5;
+  optional string workspace_token = 6;
 }
 
-// Define a message representing a command, including its metadata and timing information.
+// Define a message representing a command, including its metadata and timing
+// information.
 message Command {
-  int64 id = 1; // Unique identifier for the command.
-  string category = 2; // Category of the command (e.g., system, user).
-  string command = 3; // The actual command string.
-  string user = 4; // The user who executed the command.
-  string directory = 5; // The directory from which the command was executed.
-  int64 execution_time = 6; // Execution time of the command in milliseconds.
-  int64 start_time = 7; // Start time of the command execution (Unix timestamp).
-  int64 end_time = 8; // End time of the command execution (Unix timestamp).
-  string result = 9; // Result of executed command => success/failure
-  string status = 10; // Status of executed command 
-  string repository = 11; // Repository is repository where commands are executed
-  int64 pid = 12; // PID of the command
+  int64 id = 1;          // Unique identifier for the command.
+  string category = 2;   // Category of the command (e.g., system, user).
+  string command = 3;    // The actual command string.
+  string user = 4;       // The user who executed the command.
+  string directory = 5;  // The directory from which the command was executed.
+  int64 execution_time = 6;  // Execution time of the command in milliseconds.
+  int64 start_time =
+      7;               // Start time of the command execution (Unix timestamp).
+  int64 end_time = 8;  // End time of the command execution (Unix timestamp).
+  string result = 9;   // Result of executed command => success/failure
+  string status = 10;  // Status of executed command
+  string repository =
+      11;          // Repository is repository where commands are executed
+  int64 pid = 12;  // PID of the command
 }
 
-// Define a message representing a process, including its metadata and resource usage.
+// Define a message representing a process, including its metadata and resource
+// usage.
 message Process {
-  int64 id = 1; // Unique identifier for the process.
-  int64 pid = 2; // Process ID.
-  string name = 3; // Process name.
-  string status = 4; // Current status of the process (e.g., running, sleeping).
-  int64 created_time = 5; // Creation time of the process (Unix timestamp).
-  int64 stored_time = 6; // Time at which the process information was stored (Unix timestamp).
-  string os = 7; // Operating system the process is running on.
-  string platform = 8; // Platform information (e.g., Linux, Windows).
-  string platform_family = 9; // More detailed platform family information.
-  double cpu_usage = 10; // CPU usage percentage by the process.
-  double memory_usage = 11; // Memory usage by the process in megabytes.
-  int64 ppid = 12; // Parent process ID.
+  int64 id = 1;     // Unique identifier for the process.
+  int64 pid = 2;    // Process ID.
+  string name = 3;  // Process name.
+  string status =
+      4;  // Current status of the process (e.g., running, sleeping).
+  int64 created_time = 5;  // Creation time of the process (Unix timestamp).
+  int64 stored_time =
+      6;  // Time at which the process information was stored (Unix timestamp).
+  string os = 7;               // Operating system the process is running on.
+  string platform = 8;         // Platform information (e.g., Linux, Windows).
+  string platform_family = 9;  // More detailed platform family information.
+  double cpu_usage = 10;       // CPU usage percentage by the process.
+  double memory_usage = 11;    // Memory usage by the process in megabytes.
+  int64 ppid = 12;             // Parent process ID.
 }
 
 // Requests to send collections of commands and processes.
 
 // Defines a request for sending a collection of commands.
 message SendCommandsRequest {
-  repeated Command commands = 1; // A list of commands.
-  optional Auth auth = 2; // Optional auth configuration
+  repeated Command commands = 1;  // A list of commands.
+  optional Auth auth = 2;         // Optional auth configuration
 }
 
 // Defines a request for sending a collection of processes.
 message SendProcessesRequest {
-  repeated Process processes = 1; // A list of processes.
-  optional Auth auth = 2; // Optional auth configuration
+  repeated Process processes = 1;  // A list of processes.
+  optional Auth auth = 2;          // Optional auth configuration
 }
 
-// Defines the service that provides RPC methods for sending command and process collections.
+// Defines the service that provides RPC methods for sending command and process
+// collections.
 service CollectorService {
   // RPC method for sending command data.
   rpc SendCommands(SendCommandsRequest) returns (google.protobuf.Empty);

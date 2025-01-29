@@ -5,14 +5,13 @@
 package genconnect
 
 import (
+	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	http "net/http"
-	strings "strings"
-
-	connect "connectrpc.com/connect"
 	v1 "github.com/devzero-inc/oda/gen/api/v1"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	http "net/http"
+	strings "strings"
 )
 
 // This is a compile-time assertion to ensure that this generated file and the connect package are

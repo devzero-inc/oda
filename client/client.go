@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
+	"google.golang.org/grpc/metadata"
 )
 
 // Config holds configuration for the client connection.
@@ -104,9 +105,22 @@ func (c *Client) CheckAndReconnect() error {
 	return nil
 }
 
+func attachAuthHeaders(ctx context.Context, auth *gen.Auth) context.Context {
+	md := metadata.Pairs()
+	if auth != nil {
+		if auth.AuthToken != nil && *auth.AuthToken != "" {
+			md.Set("Authorization", "Bearer "+*auth.AuthToken)
+		}
+		if auth.WorkspaceToken != nil && *auth.WorkspaceToken != "" {
+			md.Set("x-workspace-token", "Bearer "+*auth.WorkspaceToken)
+		}
+	}
+
+	return metadata.NewOutgoingContext(ctx, md)
+}
+
 // SendCommands sends a list of commands to the server
 func (c *Client) SendCommands(commands []*gen.Command, auth *gen.Auth) error {
-
 	if err := c.CheckAndReconnect(); err != nil {
 		return fmt.Errorf("failed to reconnect: %w", err)
 	}
@@ -121,6 +135,7 @@ func (c *Client) SendCommands(commands []*gen.Command, auth *gen.Auth) error {
 	ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
 	defer cancel()
 
+	ctx = attachAuthHeaders(ctx, auth)
 	_, err := client.SendCommands(ctx, req)
 	if err != nil {
 		c.logger.Error().Err(err).Msg("Failed to send commands")
@@ -131,7 +146,6 @@ func (c *Client) SendCommands(commands []*gen.Command, auth *gen.Auth) error {
 
 // SendProcesses sends a list of processes to the server
 func (c *Client) SendProcesses(processes []*gen.Process, auth *gen.Auth) error {
-
 	if err := c.CheckAndReconnect(); err != nil {
 		return fmt.Errorf("failed to reconnect: %w", err)
 	}
@@ -146,6 +160,7 @@ func (c *Client) SendProcesses(processes []*gen.Process, auth *gen.Auth) error {
 	ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
 	defer cancel()
 
+	ctx = attachAuthHeaders(ctx, auth)
 	_, err := client.SendProcesses(ctx, req)
 	if err != nil {
 		c.logger.Error().Err(err).Msg("Failed to send processes")
