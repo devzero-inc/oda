@@ -4,7 +4,7 @@ go 1.21.4
 
 require (
 	connectrpc.com/connect v1.17.0
-	github.com/golang-jwt/jwt/v4 v4.5.1
+	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/manifoldco/promptui v0.9.0
 	github.com/pkg/errors v0.9.1
