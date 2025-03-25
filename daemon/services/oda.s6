@@ -1,0 +1,17 @@
+// File: services/oda.s6
+#!/bin/sh
+# S6 service run script for oda
+
+{{if .Username}}
+exec setuidgid {{.Username}} {{.Group}} \
+{{end}}
+exec {{.BinaryPath}} {{.CollectCommand}}
+
+// File: services/oda.s6.log
+#!/bin/sh
+# S6 logging service for oda
+
+LOGDIR="{{.Home}}/.oda/logs"
+mkdir -p "$LOGDIR"
+
+exec s6-log n20 s16777215 "$LOGDIR"
