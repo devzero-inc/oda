@@ -87,6 +87,7 @@ func (d *Daemon) InstallDaemonConfiguration() error {
 
 	// If we run S6, we need to create the service directory and log directory
 	if isS6Available() && d.config.Os == config.Linux {
+		d.logger.Debug().Msg("S6 service manager detected")
 		serviceDir := filepath.Dir(filePath)
 		logDir := filepath.Join(serviceDir, S6ServiceLogDir)
 
@@ -567,7 +568,18 @@ func checkLogindService() bool {
 
 // isS6Available checks if s6 service manager is available on the system
 func isS6Available() bool {
-	cmd := exec.Command("which", "s6-svscan")
-	err := cmd.Run()
-	return err == nil
+	// First check for s6-overlay by looking for the /init binary provided by s6-overlay
+	if _, err := exec.LookPath("/init"); err == nil {
+		// Check if it's actually s6-overlay
+		cmd := exec.Command("grep", "-q", "s6-overlay", "/init")
+		if err := cmd.Run(); err == nil {
+			return true
+		}
+	}
+
+	// Fall back to checking for standard s6 tools
+	_, err1 := exec.LookPath("s6-svscan")
+	_, err2 := exec.LookPath("s6-svc")
+
+	return err1 == nil && err2 == nil
 }
