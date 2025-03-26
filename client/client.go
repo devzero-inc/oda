@@ -57,6 +57,8 @@ func (c *Client) connect() error {
 // SendCommands sends a list of commands to the server
 func (c *Client) SendCommands(commands []*gen.Command, auth *gen.Auth) error {
 
+	c.logger.Debug().Msg("Sending commands")
+
 	req := &gen.SendCommandsRequest{
 		Commands: commands,
 		Auth:     auth,
@@ -75,6 +77,8 @@ func (c *Client) SendCommands(commands []*gen.Command, auth *gen.Auth) error {
 
 // SendProcesses sends a list of processes to the server
 func (c *Client) SendProcesses(processes []*gen.Process, auth *gen.Auth) error {
+
+	c.logger.Debug().Msg("Sending processes")
 
 	req := &gen.SendProcessesRequest{
 		Processes: processes,
