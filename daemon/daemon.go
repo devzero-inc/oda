@@ -37,11 +37,7 @@ const (
 	S6ServiceName            = "oda"
 	S6ServiceRunFilename     = "run"
 	S6ServiceDownFilename    = "down"
-	S6ServiceFinishFilename  = "finish"
-	S6ServiceLogDir          = "log"
-	S6ServiceLogRunFilename  = "run"
 	S6DaemonTemplateLocation = "services/oda.s6"
-	S6LogTemplateLocation    = "services/oda.s6.log"
 )
 
 // Embedding scripts directory
