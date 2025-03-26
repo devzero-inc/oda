@@ -356,13 +356,20 @@ func reloadS6Daemon(homeDir string, isRoot bool) error {
 	}
 	serviceDirPath := filepath.Join(servicePath, S6ServiceName)
 
-	// Signal service to reload (HUP signal)
-	cmd := exec.Command("s6-svc", "-h", serviceDirPath)
+	// For s6-overlay, touch the run file to reload the service
+	runFilePath := filepath.Join(serviceDirPath, S6ServiceRunFilename)
+	touchCmd := exec.Command("touch", runFilePath)
 	var stderr bytes.Buffer
-	cmd.Stderr = &stderr
+	touchCmd.Stderr = &stderr
 
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("failed to reload S6 service: %v", stderr.String())
+	if err := touchCmd.Run(); err != nil {
+		// If touch fails, try sending a HUP signal via s6-svc
+		cmd := exec.Command("s6-svc", "-h", serviceDirPath)
+		cmd.Stderr = &stderr
+
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("failed to reload S6 service: %v", stderr.String())
+		}
 	}
 
 	return nil
