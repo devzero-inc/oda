@@ -329,19 +329,20 @@ func stopS6Daemon(homeDir string, isRoot bool) error {
 	}
 	serviceDirPath := filepath.Join(servicePath, S6ServiceName)
 
-	// Create a down file to prevent the service from restarting
+	// Create a down file to prevent the service from starting
 	downFilePath := filepath.Join(serviceDirPath, S6ServiceDownFilename)
 	if err := afero.WriteFile(util.Fs, downFilePath, []byte(""), ServicePermission); err != nil {
 		return fmt.Errorf("failed to create S6 down file: %v", err)
 	}
 
-	// Signal service to stop
+	// Try using s6-svc to send the stop signal
 	cmd := exec.Command("s6-svc", "-d", serviceDirPath)
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("failed to stop S6 service: %v", stderr.String())
+		// Log the error but don't fail, the down file is the most important part
+		fmt.Printf("Warning: s6-svc command failed, but down file was created: %v\n", stderr.String())
 	}
 
 	return nil
