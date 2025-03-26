@@ -89,38 +89,10 @@ func (d *Daemon) InstallDaemonConfiguration() error {
 	if isS6Available() && d.config.Os == config.Linux {
 		d.logger.Debug().Msg("S6 service manager detected")
 		serviceDir := filepath.Dir(filePath)
-		logDir := filepath.Join(serviceDir, S6ServiceLogDir)
 
 		if err := util.Fs.MkdirAll(serviceDir, DirPermission); err != nil {
 			d.logger.Err(err).Msg("Failed to create S6 service directory")
 			return fmt.Errorf("failed to create S6 service directory: %w", err)
-		}
-
-		if err := util.Fs.MkdirAll(logDir, DirPermission); err != nil {
-			d.logger.Err(err).Msg("Failed to create S6 log directory")
-			return fmt.Errorf("failed to create S6 log directory: %w", err)
-		}
-
-		logRunPath := filepath.Join(logDir, S6ServiceRunFilename)
-		logTmpl, err := template.ParseFS(templateFS, S6LogTemplateLocation)
-		if err != nil {
-			d.logger.Err(err).Msg("Failed to parse S6 log template")
-			return err
-		}
-
-		var logContent bytes.Buffer
-		logTmpConf := map[string]interface{}{
-			"Home": d.config.HomeDir,
-		}
-
-		if err := logTmpl.Execute(&logContent, logTmpConf); err != nil {
-			d.logger.Err(err).Msg("Failed to execute S6 log template")
-			return err
-		}
-
-		if err := afero.WriteFile(util.Fs, logRunPath, logContent.Bytes(), 0755); err != nil {
-			d.logger.Err(err).Msg("Failed to write S6 log run file")
-			return fmt.Errorf("failed to write S6 log run file: %w", err)
 		}
 	}
 
