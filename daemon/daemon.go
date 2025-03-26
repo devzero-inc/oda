@@ -293,7 +293,8 @@ func startS6Daemon(homeDir string, isRoot bool) error {
 	}
 	serviceDirPath := filepath.Join(servicePath, S6ServiceName)
 
-	// Remove the down file if it exists to allow the service to start
+	// For s6-overlay, simply removing the down file should be enough
+	// The service will be automatically started when the directory is scanned
 	downFilePath := filepath.Join(serviceDirPath, S6ServiceDownFilename)
 	if exists, _ := afero.Exists(util.Fs, downFilePath); exists {
 		if err := util.Fs.Remove(downFilePath); err != nil {
@@ -301,13 +302,20 @@ func startS6Daemon(homeDir string, isRoot bool) error {
 		}
 	}
 
-	// Signal service to start
-	cmd := exec.Command("s6-svc", "-u", serviceDirPath)
+	// Try using touch on the run file to trigger a restart
+	runFilePath := filepath.Join(serviceDirPath, S6ServiceRunFilename)
+	cmd := exec.Command("touch", runFilePath)
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("failed to start S6 service: %v", stderr.String())
+		// If touch fails, fall back to using s6-svc as a last resort
+		fallbackCmd := exec.Command("s6-svc", "-u", serviceDirPath)
+		fallbackCmd.Stderr = &stderr
+
+		if err := fallbackCmd.Run(); err != nil {
+			return fmt.Errorf("failed to start S6 service: %v", stderr.String())
+		}
 	}
 
 	return nil
