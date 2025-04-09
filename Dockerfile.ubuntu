@@ -1,5 +1,5 @@
 # Use an official Ubuntu base image
-FROM golang:1.22
+FROM golang:1.22.12
 
 # Install Go and any other dependencies you might need
 RUN apt-get update && \
