@@ -1,0 +1,7 @@
+#!/bin/sh
+# S6 service run script for oda
+
+{{if .Username}}
+exec setuidgid {{.Username}} {{.Group}} \
+{{end}}
+exec {{.BinaryPath}} {{.CollectCommand}}

@@ -363,6 +363,7 @@ func install(cmd *cobra.Command, _ []string) error {
 	}
 
 	for shellType, shellLocation := range user.Conf.ShellTypeToLocation {
+		logging.Log.Debug().Msgf("Installing shell configuration for %s", shellLocation)
 		shellConfig := &shell.Config{
 			ShellType:     config.ShellType(shellType),
 			ShellLocation: shellLocation,

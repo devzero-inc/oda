@@ -360,8 +360,8 @@ func (c *Collector) handleEndCommand(parts []string) error {
 
 		c.logger.Debug().Msgf("Command: %+v", command)
 		if err := InsertCommand(command); err != nil {
+			// we should probably not return here, but continue with the rest of the commands
 			c.logger.Error().Err(err).Msg("Failed to insert command")
-			return err
 		}
 
 		delete(c.collectionConfig.ongoingCommands, parts[4])

@@ -30,6 +30,14 @@ const (
 	ServicePermission           = 0644
 	DirPermission               = 0755
 	BaseCollectCommand          = "collect"
+
+	// S6 service related constants
+	S6UserServiceDir         = ".s6/service"
+	S6RootServiceDir         = "/etc/s6/service"
+	S6ServiceName            = "oda"
+	S6ServiceRunFilename     = "run"
+	S6ServiceDownFilename    = "down"
+	S6DaemonTemplateLocation = "services/oda.s6"
 )
 
 // Embedding scripts directory
@@ -71,6 +79,17 @@ func (d *Daemon) InstallDaemonConfiguration() error {
 	filePath, templatePath, err := buildConfigurationPath(d.config.Os, d.config.IsRoot, d.config.HomeDir)
 	if err != nil {
 		return err
+	}
+
+	// If we run S6, we need to create the service directory and log directory
+	if isS6Available() && d.config.Os == config.Linux {
+		d.logger.Debug().Msg("S6 service manager detected")
+		serviceDir := filepath.Dir(filePath)
+
+		if err := util.Fs.MkdirAll(serviceDir, DirPermission); err != nil {
+			d.logger.Err(err).Msg("Failed to create S6 service directory")
+			return fmt.Errorf("failed to create S6 service directory: %w", err)
+		}
 	}
 
 	tmpl, err := template.ParseFS(templateFS, templatePath)
@@ -185,9 +204,16 @@ func (d *Daemon) StartDaemon() error {
 
 	switch d.config.Os {
 	case config.Linux:
-		if err := startLinuxDaemon(d.config.IsRoot); err != nil {
-			d.logger.Err(err).Msg("Failed to start daemon service")
-			return err
+		if isS6Available() {
+			if err := startS6Daemon(d.config.HomeDir, d.config.IsRoot); err != nil {
+				d.logger.Err(err).Msg("Failed to start S6 daemon service")
+				return err
+			}
+		} else {
+			if err := startLinuxDaemon(d.config.IsRoot); err != nil {
+				d.logger.Err(err).Msg("Failed to start daemon service")
+				return err
+			}
 		}
 	case config.MacOS:
 		if err := startMacOSDaemon(d.config.HomeDir, d.config.IsRoot); err != nil {
@@ -210,9 +236,16 @@ func (d *Daemon) StopDaemon() error {
 
 	switch d.config.Os {
 	case config.Linux:
-		if err := stopLinuxDaemon(d.config.IsRoot); err != nil {
-			d.logger.Err(err).Msg("Failed to stop daemon service")
-			return err
+		if isS6Available() {
+			if err := stopS6Daemon(d.config.HomeDir, d.config.IsRoot); err != nil {
+				d.logger.Err(err).Msg("Failed to stop S6 daemon service")
+				return err
+			}
+		} else {
+			if err := stopLinuxDaemon(d.config.IsRoot); err != nil {
+				d.logger.Err(err).Msg("Failed to stop daemon service")
+				return err
+			}
 		}
 	case config.MacOS:
 		if err := stopMacOSDaemon(d.config.HomeDir, d.config.IsRoot); err != nil {
@@ -235,6 +268,9 @@ func (d *Daemon) ReloadDaemon() error {
 
 	switch d.config.Os {
 	case config.Linux:
+		if isS6Available() {
+			return reloadS6Daemon(d.config.HomeDir, d.config.IsRoot)
+		}
 		return reloadLinuxDaemon(d.config.IsRoot)
 	case config.MacOS:
 		return reloadMacOSDaemon(d.config.HomeDir, d.config.IsRoot)
@@ -243,6 +279,96 @@ func (d *Daemon) ReloadDaemon() error {
 		return fmt.Errorf("unsupported operating system")
 	}
 
+}
+
+// startS6Daemon starts the daemon service on S6
+func startS6Daemon(homeDir string, isRoot bool) error {
+	servicePath := filepath.Join(homeDir, S6UserServiceDir)
+	if isRoot {
+		servicePath = S6RootServiceDir
+	}
+	serviceDirPath := filepath.Join(servicePath, S6ServiceName)
+
+	// For s6-overlay, simply removing the down file should be enough
+	// The service will be automatically started when the directory is scanned
+	downFilePath := filepath.Join(serviceDirPath, S6ServiceDownFilename)
+	if exists, _ := afero.Exists(util.Fs, downFilePath); exists {
+		if err := util.Fs.Remove(downFilePath); err != nil {
+			return fmt.Errorf("failed to remove S6 down file: %v", err)
+		}
+	}
+
+	// Try using touch on the run file to trigger a restart
+	runFilePath := filepath.Join(serviceDirPath, S6ServiceRunFilename)
+	cmd := exec.Command("touch", runFilePath)
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+
+	if err := cmd.Run(); err != nil {
+		// If touch fails, fall back to using s6-svc as a last resort
+		fallbackCmd := exec.Command("s6-svc", "-u", serviceDirPath)
+		fallbackCmd.Stderr = &stderr
+
+		if err := fallbackCmd.Run(); err != nil {
+			return fmt.Errorf("failed to start S6 service: %v", stderr.String())
+		}
+	}
+
+	return nil
+}
+
+// stopS6Daemon stops the daemon service on S6
+func stopS6Daemon(homeDir string, isRoot bool) error {
+	servicePath := filepath.Join(homeDir, S6UserServiceDir)
+	if isRoot {
+		servicePath = S6RootServiceDir
+	}
+	serviceDirPath := filepath.Join(servicePath, S6ServiceName)
+
+	// Create a down file to prevent the service from starting
+	downFilePath := filepath.Join(serviceDirPath, S6ServiceDownFilename)
+	if err := afero.WriteFile(util.Fs, downFilePath, []byte(""), ServicePermission); err != nil {
+		return fmt.Errorf("failed to create S6 down file: %v", err)
+	}
+
+	// Try using s6-svc to send the stop signal
+	cmd := exec.Command("s6-svc", "-d", serviceDirPath)
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+
+	if err := cmd.Run(); err != nil {
+		// Log the error but don't fail, the down file is the most important part
+		fmt.Printf("Warning: s6-svc command failed, but down file was created: %v\n", stderr.String())
+	}
+
+	return nil
+}
+
+// reloadS6Daemon reloads the daemon service on S6
+func reloadS6Daemon(homeDir string, isRoot bool) error {
+	servicePath := filepath.Join(homeDir, S6UserServiceDir)
+	if isRoot {
+		servicePath = S6RootServiceDir
+	}
+	serviceDirPath := filepath.Join(servicePath, S6ServiceName)
+
+	// For s6-overlay, touch the run file to reload the service
+	runFilePath := filepath.Join(serviceDirPath, S6ServiceRunFilename)
+	touchCmd := exec.Command("touch", runFilePath)
+	var stderr bytes.Buffer
+	touchCmd.Stderr = &stderr
+
+	if err := touchCmd.Run(); err != nil {
+		// If touch fails, try sending a HUP signal via s6-svc
+		cmd := exec.Command("s6-svc", "-h", serviceDirPath)
+		cmd.Stderr = &stderr
+
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("failed to reload S6 service: %v", stderr.String())
+		}
+	}
+
+	return nil
 }
 
 // reloadLinuxDaemon reloads the daemon service on Linux using systemctl.
@@ -368,18 +494,29 @@ func buildConfigurationPath(os config.OSType, isRoot bool, homeDir string) (stri
 
 	switch os {
 	case config.Linux:
-		servicePath := filepath.Join(homeDir, UserServicedFilePath)
+		if isS6Available() {
+			servicePath := filepath.Join(homeDir, S6UserServiceDir)
+			if isRoot {
+				servicePath = S6RootServiceDir
+			}
 
-		if !checkLogindService() && !isRoot {
-			return "", "", fmt.Errorf("logind service is not available")
+			filePath = filepath.Join(servicePath, S6ServiceName, S6ServiceRunFilename)
+			templateLocation = S6DaemonTemplateLocation
+		} else {
+			servicePath := filepath.Join(homeDir, UserServicedFilePath)
+
+			if !checkLogindService() && !isRoot {
+				return "", "", fmt.Errorf("logind service is not available")
+			}
+
+			if isRoot {
+				servicePath = RootServicedFilePath
+			}
+
+			filePath = filepath.Join(servicePath, ServicedName)
+			templateLocation = LinuxDaemonTemplateLocation
 		}
 
-		if isRoot {
-			servicePath = RootServicedFilePath
-		}
-
-		filePath = filepath.Join(servicePath, ServicedName)
-		templateLocation = LinuxDaemonTemplateLocation
 	case config.MacOS:
 		servicePath := filepath.Join(homeDir, PlistFilePath)
 
@@ -411,4 +548,22 @@ func checkLogindService() bool {
 	}
 
 	return true
+}
+
+// isS6Available checks if s6 service manager is available on the system
+func isS6Available() bool {
+	// First check for s6-overlay by looking for the /init binary provided by s6-overlay
+	if _, err := exec.LookPath("/init"); err == nil {
+		// Check if it's actually s6-overlay
+		cmd := exec.Command("grep", "-q", "s6-overlay", "/init")
+		if err := cmd.Run(); err == nil {
+			return true
+		}
+	}
+
+	// Fall back to checking for standard s6 tools
+	_, err1 := exec.LookPath("s6-svscan")
+	_, err2 := exec.LookPath("s6-svc")
+
+	return err1 == nil && err2 == nil
 }
