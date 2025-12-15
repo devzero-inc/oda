@@ -29,12 +29,12 @@ jobs:
           make build GOARCH=arm64
           tar -czvf "oda-linux-arm64.tar.gz" "oda"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: oda-linux-amd64.tar.gz
           path: oda-linux-amd64.tar.gz
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: oda-linux-arm64.tar.gz
           path: oda-linux-arm64.tar.gz
@@ -62,12 +62,12 @@ jobs:
           make build GOARCH=arm64
           tar -czvf "oda-darwin-arm64.tar.gz" "oda"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: oda-darwin-amd64.tar.gz
           path: oda-darwin-amd64.tar.gz
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: oda-darwin-arm64.tar.gz
           path: oda-darwin-arm64.tar.gz
